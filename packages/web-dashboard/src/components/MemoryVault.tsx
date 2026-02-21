@@ -10,7 +10,7 @@ interface Memory {
     status: 'LOCAL' | 'SYNCED' | 'ENCRYPTED';
 }
 
-export const MemoryVault: React.FC<{ agent?: any }> = ({ agent }) => {
+export const MemoryVault: React.FC = () => {
     const [isSyncing, setIsSyncing] = useState(false);
 
     const [memories, setMemories] = useState<Memory[]>([
@@ -63,10 +63,10 @@ export const MemoryVault: React.FC<{ agent?: any }> = ({ agent }) => {
                     onClick={handleSync}
                     disabled={isSyncing || !memories.some(m => m.status === 'LOCAL')}
                     className={`sticker-container px-6 py-3 font-black uppercase flex items-center gap-2 transition-all ${isSyncing
-                            ? 'bg-dark/10 text-dark/40 cursor-not-allowed'
-                            : (!memories.some(m => m.status === 'LOCAL')
-                                ? 'bg-green-500/20 text-green-700 cursor-not-allowed border-green-500'
-                                : 'bg-primary text-dark hover:bg-dark hover:text-white')
+                        ? 'bg-dark/10 text-dark/40 cursor-not-allowed'
+                        : (!memories.some(m => m.status === 'LOCAL')
+                            ? 'bg-green-500/20 text-green-700 cursor-not-allowed border-green-500'
+                            : 'bg-primary text-dark hover:bg-dark hover:text-white')
                         }`}
                 >
                     {isSyncing ? (
@@ -132,8 +132,8 @@ export const MemoryVault: React.FC<{ agent?: any }> = ({ agent }) => {
                         <div className="flex-1">
                             <div className="flex items-center gap-3 mb-2">
                                 <span className={`text-[10px] font-black px-2 py-0.5 rounded uppercase tracking-widest ${memory.type === 'MILESTONE' ? 'bg-primary text-dark' :
-                                        memory.type === 'REFLECTION' ? 'bg-accent text-white' :
-                                            'bg-dark/10 text-dark'
+                                    memory.type === 'REFLECTION' ? 'bg-accent text-white' :
+                                        'bg-dark/10 text-dark'
                                     }`}>
                                     {memory.type}
                                 </span>
