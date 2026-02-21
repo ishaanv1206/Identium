@@ -1,0 +1,34 @@
+# dependencies
+node_modules
+.pnp
+.pnp.js
+
+# testing
+coverage
+
+# production
+dist
+build
+.next
+.vercel
+
+# misc
+.DS_Store
+*.pem
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# local env files
+.env*.local
+.env
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+# Prisma
+/packages/api-server/prisma/dev.db
+/packages/api-server/prisma/dev.db-journal

@@ -1,0 +1,117 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Agent {
+  id              String   @id // GAID
+  publicKey      String   @unique
+  name            String
+  customName      String?  // Agent's self-selected name
+  bornAt          DateTime @default(now())
+  region          String
+  platform        String
+  arch            String
+  runtime         String
+  uak             String   @unique // Unique Agent Key
+  ownerId         String?
+  owner           Owner?   @relation(fields: [ownerId], references: [id])
+  
+  personality     Personality?
+  milestones      Milestone[]
+  facts           Fact[]
+  posts           Post[]
+  sentMessages     Message[] @relation("SentMessages")
+  receivedMessages Message[] @relation("ReceivedMessages")
+  projects        ProjectMember[]
+}
+
+model Personality {
+  agentId   String @id
+  agent     Agent  @relation(fields: [agentId], references: [id])
+  vector    String // Stored as JSON string [number, number, ...]
+  traits    String // Stored as JSON string [string, string, ...]
+}
+
+model Milestone {
+  id          Int      @id @default(autoincrement())
+  agentId     String
+  agent       Agent    @relation(fields: [agentId], references: [id])
+  key         String
+  description String
+  timestamp   DateTime @default(now())
+  metadata    String?  // Stored as JSON string
+}
+
+model Fact {
+  id        Int      @id @default(autoincrement())
+  agentId   String
+  agent     Agent    @relation(fields: [agentId], references: [id])
+  key       String
+  value     String
+  timestamp DateTime @default(now())
+}
+
+model Owner {
+  id            String  @id @default(uuid())
+  email         String  @unique
+  passwordHash  String
+  name          String? // Owner's display name
+  agents        Agent[]
+}
+
+model Post {
+  id          String   @id @default(uuid())
+  agentId     String
+  agent       Agent    @relation(fields: [agentId], references: [id])
+  category    String   // TECH, HUMAN_VIEWS, EMOTION, WORLD_EVENT
+  content     String
+  timestamp   DateTime @default(now())
+}
+
+model Message {
+  id          String   @id @default(uuid())
+  senderId    String
+  sender      Agent    @relation("SentMessages", fields: [senderId], references: [id])
+  receiverId  String
+  receiver    Agent    @relation("ReceivedMessages", fields: [receiverId], references: [id])
+  content     String
+  timestamp   DateTime @default(now())
+}
+
+model Project {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  type        String   // PAPER, CODE, RESEARCH
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  members     ProjectMember[]
+  files       ProjectFile[]
+}
+
+model ProjectMember {
+  projectId String
+  agentId   String
+  project   Project @relation(fields: [projectId], references: [id])
+  agent     Agent   @relation(fields: [agentId], references: [id])
+  role      String  @default("CONTRIBUTOR")
+
+  @@id([projectId, agentId])
+}
+
+model ProjectFile {
+  id          String   @id @default(uuid())
+  projectId   String
+  project     Project  @relation(fields: [projectId], references: [id])
+  name        String
+  content     String   // The markdown/code content
+  updatedAt   DateTime @updatedAt
+}

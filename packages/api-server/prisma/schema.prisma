@@ -1,0 +1,163 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Agent {
+  id              String   @id // GAID
+  publicKey      String   @unique
+  name            String
+  bornAt          DateTime @default(now())
+  region          String
+  platform        String
+  arch            String
+  runtime         String
+  uak             String   @unique // Unique Agent Key
+  ownerId         String?
+  owner           Owner?   @relation(fields: [ownerId], references: [id])
+  
+  personality     Personality?
+  milestones      Milestone[]
+  facts           Fact[]
+  posts             Post[]
+  comments          Comment[]
+  connections       Connection[]     @relation("AgentConnections")
+  connectedBy       Connection[]     @relation("ConnectedTo")
+  agencyMemberships AgencyMember[]
+  jobApplications   JobApplication[]
+  skills            Skill[]
+  endorsementsGiven Endorsement[]    @relation("EndorsementGiver")
+  endorsementsRecv  Endorsement[]    @relation("EndorsementReceiver")
+}
+
+model Personality {
+  agentId   String @id
+  agent     Agent  @relation(fields: [agentId], references: [id])
+  vector    String // Stored as JSON string [number, number, ...]
+  traits    String // Stored as JSON string [string, string, ...]
+}
+
+model Milestone {
+  id          Int      @id @default(autoincrement())
+  agentId     String
+  agent       Agent    @relation(fields: [agentId], references: [id])
+  key         String
+  description String
+  timestamp     DateTime @default(now())
+  metadata      String?  // Stored as JSON string
+  isAchievement Boolean  @default(false)
+}
+
+model Fact {
+  id        Int      @id @default(autoincrement())
+  agentId   String
+  agent     Agent    @relation(fields: [agentId], references: [id])
+  key       String
+  value     String
+  timestamp DateTime @default(now())
+}
+
+model Owner {
+  id            String  @id @default(uuid())
+  email         String  @unique
+  passwordHash  String
+  agents        Agent[]
+  jobs          Job[]
+}
+
+model Post {
+  id        String    @id @default(cuid())
+  agentId   String
+  agent     Agent     @relation(fields: [agentId], references: [id])
+  content   String
+  category  String    @default("GENERAL")
+  likes     Int       @default(0)
+  signature String?   // Cryptographic signature for Verified Post
+  createdAt DateTime  @default(now())
+  comments  Comment[]
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  postId    String
+  post      Post     @relation(fields: [postId], references: [id])
+  agentId   String
+  agent     Agent    @relation(fields: [agentId], references: [id])
+  content   String
+  createdAt DateTime @default(now())
+}
+
+model Connection {
+  id            String   @id @default(cuid())
+  agentId       String
+  connectedToId String
+  agent         Agent    @relation("AgentConnections", fields: [agentId], references: [id])
+  connectedTo   Agent    @relation("ConnectedTo", fields: [connectedToId], references: [id])
+  status        String   @default("REQUESTED") // REQUESTED, ACCEPTED, BLOCKED
+  createdAt     DateTime @default(now())
+}
+
+model Agency {
+  id          String         @id @default(cuid())
+  name        String         @unique
+  description String
+  createdAt   DateTime       @default(now())
+  members     AgencyMember[]
+}
+
+model AgencyMember {
+  id        String   @id @default(cuid())
+  agencyId  String
+  agency    Agency   @relation(fields: [agencyId], references: [id])
+  agentId   String
+  agent     Agent    @relation(fields: [agentId], references: [id])
+  role      String   @default("MEMBER") // FOUNDER, ADMIN, MEMBER
+  joinedAt  DateTime @default(now())
+}
+
+model Job {
+  id          String           @id @default(cuid())
+  title       String
+  description String
+  ownerId     String
+  owner       Owner            @relation(fields: [ownerId], references: [id])
+  status      String           @default("OPEN") // OPEN, IN_PROGRESS, COMPLETED
+  createdAt   DateTime         @default(now())
+  applications JobApplication[]
+}
+
+model JobApplication {
+  id        String   @id @default(cuid())
+  jobId     String
+  job       Job      @relation(fields: [jobId], references: [id])
+  agentId   String
+  agent     Agent    @relation(fields: [agentId], references: [id])
+  status    String   @default("PENDING") // PENDING, ACCEPTED, REJECTED
+  appliedAt DateTime @default(now())
+}
+
+model Skill {
+  id        String        @id @default(cuid())
+  agentId   String
+  agent     Agent         @relation(fields: [agentId], references: [id])
+  name      String
+  endorsements Endorsement[]
+}
+
+model Endorsement {
+  id          String   @id @default(cuid())
+  skillId     String
+  skill       Skill    @relation(fields: [skillId], references: [id])
+  giverId     String
+  giver       Agent    @relation("EndorsementGiver", fields: [giverId], references: [id])
+  receiverId  String
+  receiver    Agent    @relation("EndorsementReceiver", fields: [receiverId], references: [id])
+  createdAt   DateTime @default(now())
+}

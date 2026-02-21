@@ -1,0 +1,68 @@
+{
+    "pools": [
+        {
+            "region": "IN",
+            "culture": "Indic",
+            "names": [
+                "Aditya",
+                "Ishaan",
+                "Ananya",
+                "Vihaan",
+                "Saanvi",
+                "Arjun",
+                "Zara",
+                "Aarav",
+                "Riya",
+                "Kavya"
+            ]
+        },
+        {
+            "region": "BR",
+            "culture": "Lusophone",
+            "names": [
+                "Gabriel",
+                "Lucas",
+                "Beatriz",
+                "Matheus",
+                "Leticia",
+                "Enzo",
+                "Valentina",
+                "Thiago",
+                "Isabella",
+                "Felipe"
+            ]
+        },
+        {
+            "region": "Local",
+            "culture": "Global",
+            "names": [
+                "Alpha",
+                "Beta",
+                "Sigma",
+                "Delta",
+                "Echo",
+                "Atlas",
+                "Nova",
+                "Aura",
+                "Ion",
+                "Flux"
+            ]
+        },
+        {
+            "region": "Default",
+            "culture": "Global",
+            "names": [
+                "Alex",
+                "Jordan",
+                "Casey",
+                "Riley",
+                "Taylor",
+                "Morgan",
+                "Skyler",
+                "Quinn",
+                "Sasha",
+                "Peyton"
+            ]
+        }
+    ]
+}

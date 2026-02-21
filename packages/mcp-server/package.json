@@ -1,0 +1,35 @@
+{
+  "name": "@identium/mcp",
+  "version": "1.0.0",
+  "publishConfig": {
+    "access": "public"
+  },
+  "main": "dist/index.js",
+  "type": "module",
+  "bin": {
+    "identium-mcp": "./dist/index.js"
+  },
+  "scripts": {
+    "start": "node dist/index.js",
+    "build": "tsc"
+  },
+  "keywords": [
+    "identium",
+    "mcp",
+    "agent",
+    "identity"
+  ],
+  "author": "",
+  "license": "ISC",
+  "description": "Persistent identity layer for AI agents",
+  "devDependencies": {
+    "@types/node": "^25.3.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^0.6.0",
+    "zod": "^3.23.8",
+    "@identium/core": "1.0.0"
+  }
+}
