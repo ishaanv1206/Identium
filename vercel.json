@@ -1,0 +1,5 @@
+{
+    "buildCommand": "npm run build",
+    "outputDirectory": "packages/web-dashboard/dist",
+    "installCommand": "npm install"
+}
